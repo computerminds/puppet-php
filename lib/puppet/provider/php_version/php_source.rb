@@ -180,6 +180,9 @@ Puppet::Type.type(:php_version).provide(:php_source) do
     # Some env variables are needed for configuration
     env = "export ac_cv_exeext=''"
 
+    # Use the homebrew shims.
+    env << " && source /opt/boxen/env.sh"
+
     # PHP 5.5+ requires a later version of Bison than OSX provides (2.6 vs 2.3)
     if Gem::Version.new(@resource[:version]) > Gem::Version.new('5.4.17')
       env << " && export PATH=/opt/boxen/homebrew/opt/bisonphp26/bin:$PATH"
@@ -202,9 +205,12 @@ Puppet::Type.type(:php_version).provide(:php_source) do
   end
 
   def make
+    # Use the homebrew shims.
+    env = " && source /opt/boxen/env.sh"
+
     # PHP > 5.4.17 requires a later version of Bison than OSX provides (2.6 vs 2.3)
     if Gem::Version.new(@resource[:version]) > Gem::Version.new('5.4.17')
-      env = " && export PATH=/opt/boxen/homebrew/opt/bisonphp26/bin:$PATH"
+      env << " && export PATH=/opt/boxen/homebrew/opt/bisonphp26/bin:$PATH"
     end
 
     puts %x( cd #{@resource[:phpenv_root]}/php-src/ #{env} && make 2>&1 )
@@ -212,12 +218,18 @@ Puppet::Type.type(:php_version).provide(:php_source) do
   end
 
   def make_install
-    puts %x( cd #{@resource[:phpenv_root]}/php-src/ && make install )
+    # Use the homebrew shims.
+    env = " && source /opt/boxen/env.sh"
+
+    puts %x( cd #{@resource[:phpenv_root]}/php-src/ #{env} && make install )
     raise "Could not install PHP @resource[:version]" unless $? == 0
   end
 
   def make_clean
-    puts %x( cd #{@resource[:phpenv_root]}/php-src/ && make clean )
+    # Use the homebrew shims.
+    env = " && source /opt/boxen/env.sh"
+
+    puts %x( cd #{@resource[:phpenv_root]}/php-src/ #{env} && make clean )
   end
 
 
