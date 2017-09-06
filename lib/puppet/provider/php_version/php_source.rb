@@ -291,6 +291,11 @@ Puppet::Type.type(:php_version).provide(:php_source) do
       "--with-apxs2=/usr/sbin/apxs",
 
     ]
+    
+    # with-mysql isn't available after PHP 7.
+    if Gem::Version.new(@resource[:version]) < Gem::Version.new('7.0.0')
+      args << "--with-mysql=mysqlnd"
+    end
 
     # PHP-FPM isn't available until 5.3.3
     if Gem::Version.new(@resource[:version]) > Gem::Version.new('5.3.2')
