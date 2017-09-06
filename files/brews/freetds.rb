@@ -3,7 +3,7 @@ require 'formula'
 class Freetds < Formula
   homepage 'http://www.freetds.org/'
   url 'http://mirrors.ibiblio.org/freetds/stable/freetds-0.91.tar.gz'
-  sha1 '3ab06c8e208e82197dc25d09ae353d9f3be7db52'
+  sha256 '6a8148bd803aebceac6862b0dead1c5d9659f7e1038993abfe0ce8febb322465'
 
   depends_on "pkg-config" => :build
   depends_on "unixodbc" => :optional
